@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f9fc">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <title>Owners</title>
+  <style>
+    :root {
+      --bg: #f7f9fc;
+      --card: #fff;
+      --ink: #0f172a;
+      --muted: #475569;
+      --line: #e2e8f0;
+      --blue: #2563eb;
+      --gold-deep: #9a7b3c;
+      color-scheme: light;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+      padding: max(20px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
+    }
+
+    main {
+      width: 100%;
+      max-width: 640px;
+      min-width: 0;
+      margin: auto;
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: clamp(22px, 5vw, 32px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .mark {
+      width: 40px;
+      height: 40px;
+      flex: 0 0 auto;
+      display: block;
+      border: 1px solid var(--line);
+    }
+
+    .kicker {
+      margin: 0;
+      color: var(--gold-deep);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 2px 0 0;
+      font-size: clamp(1.45rem, 4vw, 1.7rem);
+      font-weight: 560;
+      letter-spacing: -0.035em;
+    }
+
+    .lead {
+      margin: 8px 0 0;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    ul {
+      list-style: none;
+      margin: 22px 0 0;
+      padding: 0;
+    }
+
+    li {
+      padding: 16px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    li h2 {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 560;
+      letter-spacing: -0.02em;
+      overflow-wrap: anywhere;
+    }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      margin-top: 8px;
+    }
+
+    a {
+      color: var(--blue);
+      font-size: 0.9rem;
+    }
+
+    button {
+      appearance: none;
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+      font-size: 0.9rem;
+      min-height: 40px;
+      padding: 0 14px;
+      cursor: pointer;
+    }
+
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 3px;
+    }
+
+    label { display: block; }
+
+    label + label { margin-top: 16px; }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    #logout { margin-top: 0; }
+
+    #login form {
+      margin-top: 22px;
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    form {
+      margin-top: 8px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    label span {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    input {
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+      font: inherit;
+      font-size: 1rem;
+      padding: 8px 0 10px;
+      border-radius: 0;
+    }
+
+    input::placeholder { color: var(--muted); opacity: 0.7; }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-bottom-color: var(--blue);
+    }
+
+    select {
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+      font: inherit;
+      font-size: 1rem;
+      padding: 8px 0 10px;
+      border-radius: 0;
+    }
+
+    li select {
+      width: auto;
+      min-width: 9.5rem;
+      margin-top: 8px;
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 6px 8px;
+    }
+
+    .error {
+      min-height: 1.2em;
+      margin: 8px 0 0;
+      font-size: 0.86rem;
+    }
+
+    label span { color: var(--gold-deep); }
+
+    form button {
+      margin-top: 14px;
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
+    }
+
+    .empty {
+      margin: 22px 0 0;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    .row-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .row-actions button { margin-top: 10px; }
+
+    .qr {
+      width: 180px;
+      height: 180px;
+      margin-top: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+
+    .qr svg {
+      display: block;
+      width: 180px;
+      height: 180px;
+    }
+
+    .qr-note {
+      max-width: 280px;
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <main id="login">
+    <header class="brand">
+      <img class="mark" src="icon.svg" width="40" height="40" alt="">
+      <div>
+        <p class="kicker">Admin</p>
+        <h1>Sign in</h1>
+      </div>
+    </header>
+    <form id="login-form">
+      <label>
+        <span>Username</span>
+        <input id="user" name="username" autocomplete="username" required>
+      </label>
+      <label>
+        <span>Password</span>
+        <input id="pass" name="password" type="password" autocomplete="current-password" required>
+      </label>
+      <p class="error" id="login-error"></p>
+      <button type="submit">Sign in</button>
+    </form>
+  </main>
+
+  <main id="panel" hidden>
+    <div class="top">
+      <header class="brand">
+        <img class="mark" src="icon.svg" width="40" height="40" alt="">
+        <div>
+          <p class="kicker">Admin</p>
+          <h1>Owners</h1>
+        </div>
+      </header>
+      <button type="button" id="logout">Log out</button>
+    </div>
+    <p class="lead" id="count"></p>
+    <ul id="list"></ul>
+    <p class="empty" id="empty" hidden>No owners yet.</p>
+
+    <form id="add">
+      <label>
+        <span>Maps link</span>
+        <input id="maps" type="url" placeholder="Paste a Google Maps link" autocomplete="off">
+      </label>
+      <label>
+        <span>Business type</span>
+        <select id="biz-type">
+          <option value="general">General</option>
+          <option value="restaurant">Restaurant</option>
+          <option value="shop">Shop</option>
+          <option value="clinic">Clinic</option>
+          <option value="salon">Salon</option>
+        </select>
+      </label>
+      <p class="error" id="error"></p>
+      <button type="submit">Add owner</button>
+    </form>
+  </main>
+
+  <script src="qrcode.js"></script>
+  <script>
+    const KEY = "star-owners";
+    const SESSION = "star-admin-session";
+    const USER = "Admin";
+    const PASS = "Admin@12345";
+    const loginEl = document.getElementById("login");
+    const panelEl = document.getElementById("panel");
+    const loginForm = document.getElementById("login-form");
+    const userInput = document.getElementById("user");
+    const passInput = document.getElementById("pass");
+    const loginError = document.getElementById("login-error");
+    const logoutBtn = document.getElementById("logout");
+    const TYPES = [
+      ["general", "General"],
+      ["restaurant", "Restaurant"],
+      ["shop", "Shop"],
+      ["clinic", "Clinic"],
+      ["salon", "Salon"]
+    ];
+
+    function cleanType(value) {
+      const key = String(value || "").toLowerCase();
+      return TYPES.some((item) => item[0] === key) ? key : "general";
+    }
+
+    const DEFAULT_OWNER = {
+      name: "Abdul Ahad Enterprises",
+      fid: "0x399c470720d572c5:0x56417441619742e0",
+      maps: "https://maps.app.goo.gl/qi7Ffes7L7ZkK98b9",
+      type: "general",
+      added: 0
+    };
+
+    const listEl = document.getElementById("list");
+    const countEl = document.getElementById("count");
+    const emptyEl = document.getElementById("empty");
+    const form = document.getElementById("add");
+    const mapsInput = document.getElementById("maps");
+    const typeInput = document.getElementById("biz-type");
+    const errorEl = document.getElementById("error");
+
+    function load() {
+      const raw = localStorage.getItem(KEY);
+      if (raw === null) {
+        const seeded = [DEFAULT_OWNER];
+        localStorage.setItem(KEY, JSON.stringify(seeded));
+        return seeded;
+      }
+      try {
+        const list = JSON.parse(raw);
+        return Array.isArray(list) ? list : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function save(list) {
+      localStorage.setItem(KEY, JSON.stringify(list));
+    }
+
+    function ratingHref(owner) {
+      const url = new URL("index.html", location.href);
+      url.searchParams.set("name", owner.name);
+      url.searchParams.set("fid", owner.fid);
+      if (owner.maps) url.searchParams.set("maps", owner.maps);
+      url.searchParams.set("type", cleanType(owner.type));
+      return url.toString();
+    }
+
+    function parseMapsLink(raw) {
+      const text = raw.trim();
+      if (!text) return { error: "Paste a Google Maps link." };
+      let decoded = text;
+      try { decoded = decodeURIComponent(text); } catch { decoded = text; }
+      if (/qi7Ffes7L7ZkK98b9/i.test(text)) return DEFAULT_OWNER;
+      const found = decoded.match(/!1s(0x[0-9a-f]{1,16}:0x[0-9a-f]{1,16})/i)
+        || decoded.match(/(0x[0-9a-f]{1,16}:0x[0-9a-f]{1,16})/i);
+      if (!found) {
+        return { error: "Open the place, tap Share, and paste the long Maps link." };
+      }
+      let name = "This place";
+      const named = decoded.match(/\/maps\/place\/([^/@?#]+)/i);
+      if (named) name = decodeURIComponent(named[1].replace(/\+/g, " "));
+      return {
+        name: name,
+        fid: found[1],
+        maps: /^https?:/i.test(text) ? text : "",
+        added: Date.now()
+      };
+    }
+
+    function render() {
+      const owners = load();
+      listEl.innerHTML = "";
+      emptyEl.hidden = owners.length > 0;
+      countEl.textContent = owners.length === 1 ? "1 owner" : owners.length + " owners";
+      owners.forEach((owner) => {
+        const item = document.createElement("li");
+        const title = document.createElement("h2");
+        title.textContent = owner.name;
+        const typePick = document.createElement("select");
+        typePick.setAttribute("aria-label", "Business type for " + owner.name);
+        TYPES.forEach((item) => {
+          const option = document.createElement("option");
+          option.value = item[0];
+          option.textContent = item[1];
+          typePick.append(option);
+        });
+        typePick.value = cleanType(owner.type);
+        const qrWrap = document.createElement("div");
+        qrWrap.hidden = true;
+        const qrBox = document.createElement("div");
+        qrBox.className = "qr";
+        const qrNote = document.createElement("p");
+        qrNote.className = "qr-note";
+        qrNote.textContent = location.protocol === "file:"
+          ? "A phone can open this QR after the page is on a web link."
+          : "Scan opens this place’s rating page.";
+        qrWrap.append(qrBox, qrNote);
+        function paintQr() {
+          const code = qrcode(0, "M");
+          code.addData(ratingHref({ ...owner, type: cleanType(typePick.value) }));
+          code.make();
+          qrBox.innerHTML = code.createSvgTag({ cellSize: 4, margin: 8, scalable: true });
+        }
+        typePick.addEventListener("change", () => {
+          const owners = load();
+          const found = owners.find((item) => item.fid === owner.fid);
+          const type = cleanType(typePick.value);
+          if (found) found.type = type;
+          save(owners);
+          page.href = ratingHref({ ...owner, type: type });
+          if (!qrWrap.hidden) paintQr();
+        });
+        const links = document.createElement("p");
+        links.className = "links";
+        const maps = document.createElement("a");
+        maps.href = owner.maps || ("https://www.google.com/maps?cid=" + BigInt(owner.fid.split(":")[1]).toString());
+        maps.target = "_blank";
+        maps.rel = "noopener";
+        maps.textContent = "Google Maps";
+        const page = document.createElement("a");
+        page.href = ratingHref(owner);
+        page.textContent = "Rating page";
+        links.append(maps, page);
+        const tools = document.createElement("div");
+        tools.className = "row-actions";
+        const qrBtn = document.createElement("button");
+        qrBtn.type = "button";
+        qrBtn.textContent = "QR";
+        qrBtn.addEventListener("click", () => {
+          qrWrap.hidden = !qrWrap.hidden;
+          qrBtn.textContent = qrWrap.hidden ? "QR" : "Hide QR";
+          if (!qrWrap.hidden) paintQr();
+        });
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.textContent = "Remove";
+        remove.addEventListener("click", () => {
+          save(load().filter((item) => item.fid !== owner.fid));
+          render();
+        });
+        tools.append(qrBtn, remove);
+        item.append(title, typePick, links, tools, qrWrap);
+        listEl.append(item);
+      });
+    }
+
+    function showLogin() {
+      panelEl.hidden = true;
+      loginEl.hidden = false;
+      listEl.innerHTML = "";
+      document.title = "Sign in";
+    }
+
+    function showPanel() {
+      loginEl.hidden = true;
+      panelEl.hidden = false;
+      document.title = "Owners";
+      render();
+    }
+
+    loginForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (userInput.value === USER && passInput.value === PASS) {
+        loginError.textContent = "";
+        passInput.value = "";
+        sessionStorage.setItem(SESSION, "1");
+        showPanel();
+        return;
+      }
+      loginError.textContent = "Wrong username or password.";
+    });
+
+    logoutBtn.addEventListener("click", () => {
+      sessionStorage.removeItem(SESSION);
+      showLogin();
+    });
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const parsed = parseMapsLink(mapsInput.value);
+      if (parsed.error) {
+        errorEl.textContent = parsed.error;
+        return;
+      }
+      errorEl.textContent = "";
+      const owners = load().filter((item) => item.fid !== parsed.fid);
+      owners.push({
+        name: parsed.name,
+        fid: parsed.fid,
+        maps: parsed.maps || "",
+        type: cleanType(typeInput.value),
+        added: Date.now()
+      });
+      save(owners);
+      mapsInput.value = "";
+      render();
+    });
+
+    if (sessionStorage.getItem(SESSION) === "1") showPanel();
+    else showLogin();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f9fc">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <title>Rate</title>
+  <style>
+    :root {
+      --bg: #f7f9fc;
+      --card: #fff;
+      --ink: #0f172a;
+      --muted: #475569;
+      --line: #e2e8f0;
+      --blue: #2563eb;
+      --gold: #c5a35a;
+      --gold-deep: #9a7b3c;
+      color-scheme: light;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+      padding: max(20px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
+    }
+
+    main {
+      width: 100%;
+      max-width: 480px;
+      min-width: 0;
+      margin: auto;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 0;
+      padding: clamp(20px, 5vw, 28px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .mark {
+      width: 44px;
+      height: 44px;
+      flex: 0 0 auto;
+      display: block;
+      border: 1px solid var(--line);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.28rem, 4vw, 1.5rem);
+      font-weight: 560;
+      letter-spacing: -0.035em;
+      overflow-wrap: anywhere;
+    }
+
+    .lead {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.45;
+      overflow-wrap: break-word;
+    }
+
+    .stars {
+      display: flex;
+      gap: 4px;
+      margin-top: 18px;
+    }
+
+    .star {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: #cbd5e1;
+      flex: 1 1 0;
+      width: auto;
+      max-width: 52px;
+      aspect-ratio: 1;
+      height: auto;
+      padding: 6px;
+      border-radius: 0;
+      cursor: pointer;
+      line-height: 0;
+    }
+
+    .star svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .star path {
+      fill: transparent;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      stroke-linejoin: round;
+    }
+
+    .star.on {
+      color: var(--gold);
+    }
+
+    .star.on path {
+      fill: currentColor;
+    }
+
+    .star:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
+    }
+
+    .row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 1.4em;
+      margin-top: 4px;
+    }
+
+    .meta {
+      margin: 0;
+      color: var(--gold-deep);
+      font-size: 0.86rem;
+      letter-spacing: 0.01em;
+    }
+
+    .text-btn {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      font: inherit;
+      font-size: 0.86rem;
+      padding: 4px 0;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .text-btn:hover { color: #1d4ed8; }
+
+    .text-btn:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
+    }
+
+    .review {
+      margin-top: 16px;
+      padding: 14px 14px 16px;
+      border: 1px solid var(--line);
+      background: var(--bg);
+    }
+
+    .label {
+      margin: 0;
+      color: var(--gold-deep);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .quote {
+      margin: 8px 0 0;
+      min-height: 4.8em;
+      font-size: 1.05rem;
+      line-height: 1.55;
+      letter-spacing: 0;
+      overflow-wrap: break-word;
+    }
+
+    .quote.empty {
+      font-size: 1.05rem;
+    }
+
+    .quote.generating {
+      color: var(--blue);
+    }
+
+    .wave {
+      display: inline-flex;
+      gap: 4px;
+      margin-left: 6px;
+      height: 1em;
+      vertical-align: middle;
+    }
+
+    .wave i {
+      width: 5px;
+      height: 5px;
+      margin-top: 0.45em;
+      border-radius: 50%;
+      background: var(--blue);
+      animation: wave 0.9s ease-in-out infinite;
+    }
+
+    .wave i:nth-child(2) { animation-delay: 0.14s; }
+    .wave i:nth-child(3) { animation-delay: 0.28s; }
+
+    .quote.fresh {
+      animation: rise 260ms ease;
+    }
+
+    @keyframes wave {
+      0%, 70%, 100% { transform: translateY(0); opacity: 0.35; }
+      35% { transform: translateY(-6px); opacity: 1; }
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .quote.fresh,
+      .wave i { animation: none; }
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .actions[hidden] { display: none; }
+
+    .btn {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+      font-size: 0.92rem;
+      width: 100%;
+      min-height: 44px;
+      padding: 0 16px;
+      border-radius: 0;
+      cursor: pointer;
+    }
+
+    .btn.primary {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+    }
+
+    .btn:hover { background: #f8fafc; }
+
+    .btn.primary:hover { background: #1d4ed8; }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 3px;
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    a.btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    .place-link {
+      display: inline-block;
+      margin-top: 4px;
+      color: var(--blue);
+      font-size: 0.86rem;
+    }
+
+    .status {
+      min-height: 1.3em;
+      margin: 12px 0 0;
+      color: var(--ink);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="brand">
+      <img class="mark" src="icon.svg" width="44" height="44" alt="">
+      <div>
+        <h1 id="place">Abdul Ahad Enterprises</h1>
+        <a class="place-link" id="maps" href="https://maps.app.goo.gl/qi7Ffes7L7ZkK98b9" target="_blank" rel="noopener">Open in Google Maps</a>
+      </div>
+    </header>
+    <p class="lead">Choose a star. Copy the review, then paste it into Google.</p>
+
+    <div class="stars" role="radiogroup" aria-label="Rating from 1 to 5">
+      <button class="star" type="button" role="radio" aria-checked="false" data-value="1" aria-label="1 star">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2l2.85 5.78 6.38.93-4.62 4.5 1.09 6.36L12 16.77l-5.7 3 1.09-6.36-4.62-4.5 6.38-.93L12 2.2z"/></svg>
+      </button>
+      <button class="star" type="button" role="radio" aria-checked="false" data-value="2" aria-label="2 stars">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2l2.85 5.78 6.38.93-4.62 4.5 1.09 6.36L12 16.77l-5.7 3 1.09-6.36-4.62-4.5 6.38-.93L12 2.2z"/></svg>
+      </button>
+      <button class="star" type="button" role="radio" aria-checked="false" data-value="3" aria-label="3 stars">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2l2.85 5.78 6.38.93-4.62 4.5 1.09 6.36L12 16.77l-5.7 3 1.09-6.36-4.62-4.5 6.38-.93L12 2.2z"/></svg>
+      </button>
+      <button class="star" type="button" role="radio" aria-checked="false" data-value="4" aria-label="4 stars">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2l2.85 5.78 6.38.93-4.62 4.5 1.09 6.36L12 16.77l-5.7 3 1.09-6.36-4.62-4.5 6.38-.93L12 2.2z"/></svg>
+      </button>
+      <button class="star" type="button" role="radio" aria-checked="false" data-value="5" aria-label="5 stars">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2l2.85 5.78 6.38.93-4.62 4.5 1.09 6.36L12 16.77l-5.7 3 1.09-6.36-4.62-4.5 6.38-.93L12 2.2z"/></svg>
+      </button>
+    </div>
+
+    <div class="row">
+      <p class="meta" id="meta" aria-live="polite"></p>
+      <button class="text-btn" id="clear" type="button" hidden>Clear</button>
+    </div>
+
+    <div class="review">
+      <p class="label">Your review</p>
+      <p class="quote empty" id="quote">Choose a star to write a review.</p>
+    </div>
+
+    <div class="actions" id="actions" hidden>
+      <a class="btn primary" id="google" href="https://search.google.com/local/writereview?placeid=ChIJxXLVIAdHnDkR4EKXYUF0QVY" target="_blank" rel="noopener">Copy and open Google</a>
+      <button class="btn" id="copy" type="button">Copy</button>
+      <button class="btn" id="another" type="button">Another review</button>
+    </div>
+    <p class="status" id="status" aria-live="polite"></p>
+  </main>
+
+  <script>
+    // Three sentences per review. Wording follows the business type.
+    const PARTS = {
+      general: {
+      1: {
+        open: [
+          "I had a poor time at {Name}.",
+          "{Name} let me down on a simple visit.",
+          "My stop at {Name} went badly.",
+          "I left {Name} unhappy and out of time.",
+          "{Name} did not handle this well.",
+          "Nothing at {Name} felt looked after.",
+          "I needed care from {Name} and did not get it.",
+          "{Name} made an easy task feel careless.",
+          "A visit to {Name} was one problem after another.",
+          "I cannot praise my time at {Name}.",
+          "{Name} was muddled when I needed clarity.",
+          "Going to {Name} wasted time and fixed nothing."
+        ],
+        detail: [
+          "Requests were missed and I had to repeat myself.",
+          "The pace was slow and nobody knew the next step.",
+          "Simple details were wrong and stayed wrong.",
+          "People were hard to reach and short on answers.",
+          "What I received was not what I had asked for.",
+          "The wait dragged on and the result still failed.",
+          "I was never told where things actually stood.",
+          "The finish was rough and the basics were missing.",
+          "I had to chase updates that never came.",
+          "Care was missing and small problems were ignored.",
+          "It stalled, then rushed, and still missed the point.",
+          "I walked out with the same problem I came in with."
+        ],
+        close: [
+          "I would not recommend it or come back.",
+          "Look for a place that is more careful.",
+          "I am done after a result that missed.",
+          "I would not send a friend this way.",
+          "Next time I will skip it entirely.",
+          "This is not a place I can stand behind.",
+          "I should have taken this somewhere else.",
+          "A second visit is not worth trying.",
+          "I would tell people to look elsewhere.",
+          "The poor score matches the whole visit.",
+          "I cannot suggest this place at all.",
+          "I would not return, even for less."
+        ]
+      },
+      2: {
+        open: [
+          "{Name} was only fair, and mostly weak.",
+          "I can give {Name} a fair rating at best.",
+          "My visit to {Name} was uneven.",
+          "{Name} covered the minimum and little else.",
+          "I left {Name} with more complaints than praise.",
+          "{Name} did only part of the job.",
+          "A stop at {Name} started fine, then slipped.",
+          "{Name} felt ordinary and a bit disappointing.",
+          "I wanted a smooth visit at {Name} and got half of one.",
+          "{Name} is not awful, but it is not good.",
+          "My time at {Name} stayed below what I hoped.",
+          "{Name} got me through, with too much friction."
+        ],
+        detail: [
+          "One part was fine and the rest needed more care.",
+          "The wait was too long for what I received.",
+          "Answers were vague, so the plan stayed unclear.",
+          "A few things were done, then follow-through faded.",
+          "People were polite, yet the work stayed average.",
+          "Small mistakes piled up and only some were fixed.",
+          "It started all right and lost focus before the end.",
+          "I had to ask twice for something simple.",
+          "The outcome was usable, but it did not feel finished.",
+          "Once the delays were counted, the value was thin.",
+          "Nothing was awful, and nothing was handled with care.",
+          "A better pace would have changed the visit."
+        ],
+        close: [
+          "I would return only if nothing else was close.",
+          "I would hesitate before sending anyone here.",
+          "Fair is the right word, and good is too kind.",
+          "I am not eager to do this again.",
+          "Stronger options exist for the same need.",
+          "I left unconvinced and a little worn out.",
+          "I would not put this on a short list.",
+          "Another try is possible, but I doubt it.",
+          "I see the effort and still would not recommend it.",
+          "The visit was survivable, not satisfying.",
+          "I would look around before coming back.",
+          "Two stars is as far as this can go."
+        ]
+      },
+      3: {
+        open: [
+          "{Name} was okay, right in the middle.",
+          "My visit to {Name} was average.",
+          "I had an ordinary time at {Name}.",
+          "{Name} did the job without standing out.",
+          "Nothing went wrong at {Name}, and nothing sparkled.",
+          "{Name} is a fair stop for a plain need.",
+          "I left {Name} neither pleased nor annoyed.",
+          "{Name} met the basic need and then stopped.",
+          "A visit to {Name} was fine for an everyday errand.",
+          "{Name} sits in the middle after this visit.",
+          "I got what I came for at {Name}, with no extra.",
+          "{Name} was acceptable from start to finish."
+        ],
+        detail: [
+          "The work was correct and the wait was ordinary.",
+          "Staff were polite, and I got what I asked for.",
+          "A small delay showed up, then the rest was steady.",
+          "Communication was clear, without much warmth.",
+          "Quality was decent and the pace was unremarkable.",
+          "One detail could have been smoother, and the rest was fine.",
+          "Nothing felt careless, and nothing felt special.",
+          "The price seemed fair for an ordinary result.",
+          "I knew where I stood, even without a surprise.",
+          "It is the kind of stop you forget by tomorrow.",
+          "The basics were in place, which is enough for okay.",
+          "A few minutes dragged, then it finished as expected."
+        ],
+        close: [
+          "I would come back if it were convenient.",
+          "Three stars fits a fine, forgettable visit.",
+          "I can suggest it for a simple need only.",
+          "Okay is honest, and I have no stronger word.",
+          "I might return, but not by going out of my way.",
+          "A friend could try it and expect a normal day.",
+          "I left satisfied enough, and not excited.",
+          "It earns a middle score without debate.",
+          "I would use it again when I am already nearby.",
+          "No complaint is large enough to pull it down.",
+          "I got through it without a real problem.",
+          "Average, done cleanly, is the fair summary."
+        ]
+      },
+      4: {
+        open: [
+          "I had a good experience at {Name}.",
+          "{Name} did a solid job and I was glad I came.",
+          "My visit to {Name} was pleasant and well handled.",
+          "{Name} is a place I would happily use again.",
+          "I left {Name} with the result I wanted.",
+          "{Name} made a routine visit feel easy.",
+          "Choosing {Name} worked out well.",
+          "{Name} was careful and easy to deal with.",
+          "I had a smooth time at {Name}.",
+          "{Name} handled a normal request properly.",
+          "A stop at {Name} was better than I expected.",
+          "{Name} earned a good score without much doubt."
+        ],
+        detail: [
+          "The people were helpful and the work came back clean.",
+          "I was kept informed, and the finish matched my request.",
+          "Timing was reasonable and the small details held.",
+          "Staff were polite and clearly knew the work.",
+          "The result was clean and I did not have to chase it.",
+          "One short wait was the only soft spot.",
+          "Communication stayed clear from start to finish.",
+          "A small request was remembered and done right.",
+          "I felt looked after without being rushed.",
+          "Quality was strong, with one minor note I can accept.",
+          "Things moved along and needed no second try.",
+          "It was easy to explain the need and easy to collect it."
+        ],
+        close: [
+          "I would recommend this place to someone nearby.",
+          "Four stars feels right, and I will come back.",
+          "I would send a friend here with confidence.",
+          "This is a good choice when the work must be right.",
+          "I left happy and I already know I would return.",
+          "A tiny quibble does not change how pleased I am.",
+          "I would pick them again before searching elsewhere.",
+          "Good service like this is worth passing on.",
+          "I am comfortable suggesting this place.",
+          "The visit earned both a return and a recommendation.",
+          "I walked out satisfied and would repeat it.",
+          "This is an easy place to say yes to."
+        ]
+      },
+      5: {
+        open: [
+          "I had an excellent time at {Name}.",
+          "{Name} got every part of the visit right.",
+          "My time at {Name} was as good as I could want.",
+          "{Name} is the place I would name first.",
+          "I left {Name} fully satisfied.",
+          "{Name} turned a normal errand into an easy win.",
+          "Choosing {Name} was the right call.",
+          "{Name} was careful from the first minute to the last.",
+          "I cannot think of a miss at {Name}.",
+          "{Name} set a high mark and then met it.",
+          "A visit to {Name} was smooth, kind, and complete.",
+          "{Name} is now the one I trust for this."
+        ],
+        detail: [
+          "The work was exact and the people were genuinely warm.",
+          "Every question got a clear answer, and nothing was missing.",
+          "Timing was sharp and the finish looked right.",
+          "A simple request got the same care as a large one.",
+          "I never had to repeat myself, and the result was exact.",
+          "Small details were handled before I mentioned them.",
+          "The visit felt calm, organized, and truly helpful.",
+          "Quality and courtesy showed up together.",
+          "I was guided through it and still had time to spare.",
+          "Nothing was rushed and nothing was left half done.",
+          "The people knew the work and made the stop feel easy.",
+          "From the greeting to the handoff, it stayed excellent."
+        ],
+        close: [
+          "I would recommend them without a second thought.",
+          "Five stars is fair, and I will be back.",
+          "I would send friends here first.",
+          "This is the standard other places should meet.",
+          "I left impressed and I am already planning to return.",
+          "Anyone nearby should put this place first.",
+          "I trust them completely after this visit.",
+          "I would choose them again without looking around.",
+          "A visit this complete is rare, and this was one.",
+          "I am glad to recommend them by name.",
+          "The high score matches what I received.",
+          "I walked out sure this was the right place."
+        ]
+      }
+      },
+      restaurant: {
+        1: {
+          open: [
+            "I had a poor meal at {Name}.",
+            "The food at {Name} let me down.",
+            "{Name} did not serve this meal well.",
+            "I left {Name} wanting a better meal.",
+            "My order at {Name} was a disappointment.",
+            "{Name} made a simple meal feel careless.",
+            "I cannot praise the food at {Name}.",
+            "Eating at {Name} was not worth the wait."
+          ],
+          detail: [
+            "The food was cold and the taste was off.",
+            "What I ordered did not match what arrived.",
+            "The wait was long and the meal still failed.",
+            "Staff were hard to flag and short on the order.",
+            "The portion was poor and the food felt tired.",
+            "The table was neglected and the dish was wrong.",
+            "Nothing tasted fresh and nobody fixed the plate.",
+            "I asked twice and the meal still missed."
+          ],
+          close: [
+            "I would not recommend this restaurant.",
+            "Next time I will eat somewhere else.",
+            "I would not send a friend here for a meal.",
+            "A second meal here is not worth it.",
+            "The poor score matches the whole meal.",
+            "I left sure I should have eaten elsewhere.",
+            "I cannot suggest this place for food.",
+            "I would not come back, even for a snack."
+          ]
+        },
+        2: {
+          open: [
+            "{Name} was only a fair meal.",
+            "The food at {Name} was uneven.",
+            "I can give the meal at {Name} a fair rating.",
+            "My order at {Name} was more miss than hit.",
+            "{Name} covered hunger and little else.",
+            "I left {Name} underwhelmed by the food.",
+            "A meal at {Name} started fine, then slipped.",
+            "{Name} is edible, but the food is not good."
+          ],
+          detail: [
+            "One dish was fine and the rest needed more care.",
+            "The wait was too long for the plate I got.",
+            "The taste was plain and the portion felt thin.",
+            "Service was polite, yet the food stayed average.",
+            "A small mistake in the order was only partly fixed.",
+            "It arrived late and did not taste finished.",
+            "The menu promised more than the meal delivered.",
+            "Nothing was awful, and nothing was cooked with care."
+          ],
+          close: [
+            "I would eat here again only if nothing else was close.",
+            "I would hesitate before sending anyone for a meal.",
+            "Fair is the right word for this food.",
+            "I am not eager to order here again.",
+            "Better restaurants exist for the same craving.",
+            "The meal was survivable, not satisfying.",
+            "I would look around before coming back to eat.",
+            "Two stars is as far as this meal can go."
+          ]
+        },
+        3: {
+          open: [
+            "{Name} was an okay meal, nothing more.",
+            "The food at {Name} was average.",
+            "I had an ordinary meal at {Name}.",
+            "{Name} fed me without standing out.",
+            "Nothing was wrong with the food at {Name}.",
+            "A meal at {Name} was fine for an everyday bite.",
+            "I left {Name} neither pleased nor hungry.",
+            "{Name} served a basic meal and then stopped."
+          ],
+          detail: [
+            "The food was correct and the wait was ordinary.",
+            "Staff were polite, and the order matched the menu.",
+            "A short delay showed up, then the plate was fine.",
+            "The taste was decent and the pace was plain.",
+            "One side could have been hotter, and the rest was fine.",
+            "The table was clean and the meal was simply fine.",
+            "Portions were fair for an ordinary price.",
+            "It is the kind of meal you forget by tomorrow."
+          ],
+          close: [
+            "I would eat here again if it were convenient.",
+            "Three stars fits an okay, forgettable meal.",
+            "I can suggest it for a simple bite only.",
+            "Okay is honest for this restaurant.",
+            "I might return, but not for a special meal.",
+            "A friend could eat here and expect a normal plate.",
+            "I left full enough, and not excited.",
+            "Average food, served cleanly, is the fair word."
+          ]
+        },
+        4: {
+          open: [
+            "I had a good meal at {Name}.",
+            "The food at {Name} was tasty and well served.",
+            "{Name} made a simple meal feel easy.",
+            "I left {Name} glad I had ordered there.",
+            "My meal at {Name} was pleasant and solid.",
+            "{Name} got the order right and the taste right.",
+            "Choosing {Name} worked out well for a meal.",
+            "{Name} is a restaurant I would use again."
+          ],
+          detail: [
+            "The food was fresh and the staff were helpful.",
+            "My order came out right and the plate looked cared for.",
+            "Timing was reasonable and the meal stayed hot.",
+            "Service was polite and the taste matched the menu.",
+            "The portion was fair and I did not have to chase it.",
+            "One short wait was the only soft spot in the meal.",
+            "The table was clean and the flavors were good.",
+            "It was easy to order and easy to enjoy."
+          ],
+          close: [
+            "I would recommend this restaurant to someone nearby.",
+            "Four stars feels right, and I will eat here again.",
+            "I would send a friend here for a meal.",
+            "This is a good choice when you want food done properly.",
+            "I left happy and I already know I would return.",
+            "A tiny quibble does not change how good the meal was.",
+            "I would pick this kitchen again before searching.",
+            "Good food like this is worth passing on."
+          ]
+        },
+        5: {
+          open: [
+            "I had an excellent meal at {Name}.",
+            "The food at {Name} was outstanding.",
+            "{Name} served one of my better meals lately.",
+            "I left {Name} full and genuinely happy.",
+            "A meal at {Name} was worth coming back for.",
+            "{Name} got the food and the service right.",
+            "I am glad I ate at {Name}.",
+            "My table at {Name} was a real treat."
+          ],
+          detail: [
+            "The food was fresh and the taste was exactly right.",
+            "The portion was generous and the meal arrived hot.",
+            "Staff were warm and the order came out correctly.",
+            "The menu had what I wanted and it was well made.",
+            "Service was quick without rushing the meal.",
+            "The flavors were balanced and the plate felt fresh.",
+            "The table was clean and the serving was careful.",
+            "I would order the same dish again without thinking."
+          ],
+          close: [
+            "I would recommend this restaurant to friends.",
+            "Five stars is fair, and I will eat here again.",
+            "This is an easy place to suggest for a meal.",
+            "I left happy and I am already planning to return.",
+            "Anyone nearby should try the food here.",
+            "The meal earned both a return and a recommendation.",
+            "I would choose this kitchen again.",
+            "A great meal is rare, and this was one."
+          ]
+        }
+      },
+      shop: {
+        1: {
+          open: [
+            "I had a poor stop at {Name}.",
+            "The products at {Name} let me down.",
+            "{Name} did not handle a simple purchase well.",
+            "I left {Name} without what I came to buy.",
+            "My purchase at {Name} was a disappointment.",
+            "{Name} made shopping feel careless.",
+            "I cannot praise the goods at {Name}.",
+            "Buying at {Name} wasted time and money."
+          ],
+          detail: [
+            "The item I needed was missing and nobody offered a substitute.",
+            "What I was sold did not match what I paid for.",
+            "Billing was slow and the product was wrong.",
+            "Staff could not find the item or explain the price.",
+            "The goods looked tired and the counter was a mess.",
+            "I had to ask twice and still left with the wrong thing.",
+            "Stock was unclear and the product felt poor.",
+            "The shop had the label, not the item I needed."
+          ],
+          close: [
+            "I would not recommend this shop.",
+            "Next time I will buy somewhere else.",
+            "I would not send a friend here to shop.",
+            "A second purchase is not worth trying.",
+            "The poor score matches the whole stop.",
+            "I left sure I should have shopped elsewhere.",
+            "I cannot suggest this place for buying.",
+            "I would not come back, even for a small item."
+          ]
+        },
+        2: {
+          open: [
+            "{Name} was only a fair shop stop.",
+            "The products at {Name} were uneven.",
+            "I can give the shopping at {Name} a fair rating.",
+            "My purchase at {Name} was more miss than find.",
+            "{Name} had something on the shelf and little else.",
+            "I left {Name} underwhelmed by the goods.",
+            "A stop at {Name} started fine, then the item slipped.",
+            "{Name} is a shop, but the buying was not good."
+          ],
+          detail: [
+            "One item was fine and the rest of the stock was thin.",
+            "The wait at the counter was too long for the purchase.",
+            "The price was unclear until billing was halfway done.",
+            "Staff were polite, yet the product stayed average.",
+            "A small mistake in the bill was only partly fixed.",
+            "They had the item, but it did not feel worth the price.",
+            "The shelf promised more than the product delivered.",
+            "Nothing was awful, and nothing was a good buy."
+          ],
+          close: [
+            "I would shop here again only if nowhere else was close.",
+            "I would hesitate before sending anyone to buy here.",
+            "Fair is the right word for this shop.",
+            "I am not eager to purchase here again.",
+            "Better shops exist for the same item.",
+            "The stop was survivable, not satisfying.",
+            "I would look around before buying here again.",
+            "Two stars is as far as this purchase can go."
+          ]
+        },
+        3: {
+          open: [
+            "{Name} was an okay shop, nothing more.",
+            "The products at {Name} were average.",
+            "I had an ordinary purchase at {Name}.",
+            "{Name} sold me the item without standing out.",
+            "Nothing was wrong with the goods at {Name}.",
+            "A stop at {Name} was fine for an everyday buy.",
+            "I left {Name} with the item and no strong feeling.",
+            "{Name} completed a basic sale and then stopped."
+          ],
+          detail: [
+            "The item was correct and the wait was ordinary.",
+            "Staff were polite, and the product matched the shelf.",
+            "Billing was clear, without much warmth or fuss.",
+            "The price seemed fair for an ordinary product.",
+            "One detail on the pack could be clearer, and the rest was fine.",
+            "The counter moved along and the goods were simply fine.",
+            "Stock was there, which is enough for an okay shop.",
+            "It is the kind of purchase you forget by tomorrow."
+          ],
+          close: [
+            "I would buy here again if it were convenient.",
+            "Three stars fits an okay, forgettable shop stop.",
+            "I can suggest it for a simple item only.",
+            "Okay is honest for this shop.",
+            "I might return, but not for something special.",
+            "A friend could shop here and expect a normal sale.",
+            "I left with what I needed, and not excited.",
+            "Average goods, sold cleanly, is the fair word."
+          ]
+        },
+        4: {
+          open: [
+            "I had a good stop at {Name}.",
+            "The products at {Name} were solid and easy to find.",
+            "{Name} made a simple purchase feel easy.",
+            "I left {Name} glad I had bought there.",
+            "My shopping at {Name} was pleasant and clear.",
+            "{Name} had the item and the price was fair.",
+            "Choosing {Name} worked out well for a purchase.",
+            "{Name} is a shop I would use again."
+          ],
+          detail: [
+            "The goods were in good shape and the staff were helpful.",
+            "Billing was quick and the item matched what I asked for.",
+            "The shelf was clear and the product was easy to check.",
+            "Staff knew the stock and the price was explained.",
+            "I found what I needed and did not have to chase it.",
+            "One short wait at the counter was the only soft spot.",
+            "The shop was tidy and the product was good.",
+            "It was easy to choose and easy to pay."
+          ],
+          close: [
+            "I would recommend this shop to someone nearby.",
+            "Four stars feels right, and I will buy here again.",
+            "I would send a friend here for this kind of item.",
+            "This is a good choice when the product must be right.",
+            "I left happy and I already know I would return.",
+            "A tiny quibble does not change how good the buy was.",
+            "I would pick this shop again before searching.",
+            "A good purchase like this is worth passing on."
+          ]
+        },
+        5: {
+          open: [
+            "I had an excellent stop at {Name}.",
+            "The products at {Name} were exactly what I needed.",
+            "{Name} made buying easy and the quality showed.",
+            "I left {Name} glad about every item.",
+            "Shopping at {Name} was worth coming back for.",
+            "{Name} got the product and the service right.",
+            "I am glad I bought from {Name}.",
+            "My purchase at {Name} was a real find."
+          ],
+          detail: [
+            "The item was in stock and the quality was obvious.",
+            "Staff knew the products and billing was quick.",
+            "The goods were clean and matched what I asked for.",
+            "The price was fair and the product needed no second look.",
+            "I was helped without being pushed toward a dearer item.",
+            "The shelf was clear and the thing I wanted was right there.",
+            "The counter was quick and the bag was packed with care.",
+            "I would buy the same product here again without thinking."
+          ],
+          close: [
+            "I would recommend this shop to friends.",
+            "Five stars is fair, and I will buy here again.",
+            "This is an easy place to suggest for shopping.",
+            "I left happy and I am already planning the next purchase.",
+            "Anyone nearby should look at the goods here.",
+            "The purchase earned both a return and a recommendation.",
+            "I would choose this shop again.",
+            "A great buy is rare, and this was one."
+          ]
+        }
+      },
+      clinic: {
+        1: {
+          open: [
+            "I had a poor visit at {Name}.",
+            "The appointment at {Name} let me down.",
+            "{Name} did not handle a simple visit well.",
+            "I left {Name} without a clear answer.",
+            "My visit to {Name} was a disappointment.",
+            "{Name} made a clinic visit feel careless.",
+            "I cannot praise the care at {Name}.",
+            "Waiting at {Name} was not worth the visit."
+          ],
+          detail: [
+            "I waited a long time and left without a clear explanation.",
+            "The visit felt rushed and my question was brushed aside.",
+            "Staff were hard to reach and the plan was never explained.",
+            "The appointment ran late and the room felt neglected.",
+            "Nobody told me what would happen next.",
+            "I had to repeat myself and still felt unheard.",
+            "The basics of a clinic visit were missing.",
+            "I walked out with the same worry I came in with."
+          ],
+          close: [
+            "I would not recommend this clinic.",
+            "Next time I will book somewhere else.",
+            "I would not send a family member here.",
+            "A second appointment is not worth trying.",
+            "The poor score matches the whole visit.",
+            "I left sure I should have gone elsewhere.",
+            "I cannot suggest this clinic.",
+            "I would not come back, even for a short visit."
+          ]
+        },
+        2: {
+          open: [
+            "{Name} was only a fair clinic visit.",
+            "The appointment at {Name} was uneven.",
+            "I can give the visit at {Name} a fair rating.",
+            "My time at {Name} answered only part of the question.",
+            "{Name} covered the minimum of a visit.",
+            "I left {Name} still unsure about the plan.",
+            "A visit to {Name} started fine, then the care slipped.",
+            "{Name} is a clinic, but the visit was not good."
+          ],
+          detail: [
+            "One part was explained and the rest stayed vague.",
+            "The wait was too long for the time I was given.",
+            "Staff were polite, yet the visit felt unfinished.",
+            "I had to ask twice for a simple next step.",
+            "The room was acceptable and the explanation was thin.",
+            "The appointment happened, but follow-up was unclear.",
+            "Nothing was awful, and nothing felt carefully handled.",
+            "A clearer explanation would have changed the visit."
+          ],
+          close: [
+            "I would return only if no other clinic was close.",
+            "I would hesitate before sending family here.",
+            "Fair is the right word for this visit.",
+            "I am not eager to book here again.",
+            "Clearer clinics exist for the same need.",
+            "The visit was survivable, not reassuring.",
+            "I would look around before the next appointment.",
+            "Two stars is as far as this visit can go."
+          ]
+        },
+        3: {
+          open: [
+            "{Name} was an okay clinic visit.",
+            "The appointment at {Name} was average.",
+            "I had an ordinary visit at {Name}.",
+            "{Name} saw me without standing out.",
+            "Nothing went wrong at the clinic visit to {Name}.",
+            "A stop at {Name} was fine for a basic appointment.",
+            "I left {Name} neither reassured nor annoyed.",
+            "{Name} covered a basic visit and then stopped."
+          ],
+          detail: [
+            "The wait was ordinary and the explanation was plain.",
+            "Staff were polite, and my question got a basic answer.",
+            "The appointment ran close to time, without much warmth.",
+            "The room was clean enough for an ordinary visit.",
+            "I knew the next step, even if nothing felt special.",
+            "One delay showed up, then the visit was steady.",
+            "The basics of a clinic visit were in place.",
+            "It is the kind of appointment you forget by tomorrow."
+          ],
+          close: [
+            "I would book here again if it were convenient.",
+            "Three stars fits an okay, forgettable visit.",
+            "I can suggest it for a simple appointment only.",
+            "Okay is honest for this clinic.",
+            "I might return, but not as a first choice.",
+            "A relative could visit and expect a normal appointment.",
+            "I left with an answer, and not much comfort.",
+            "An average visit, handled cleanly, is the fair word."
+          ]
+        },
+        4: {
+          open: [
+            "I had a good visit at {Name}.",
+            "The appointment at {Name} was clear and kind.",
+            "{Name} made a clinic visit feel manageable.",
+            "I left {Name} glad I had come in.",
+            "My time at {Name} was calm and useful.",
+            "{Name} explained the next step and treated me well.",
+            "Choosing {Name} worked out well for a visit.",
+            "{Name} is a clinic I would use again."
+          ],
+          detail: [
+            "The staff were helpful and the wait was reasonable.",
+            "My questions were answered and the plan was clear.",
+            "The room was clean and the appointment stayed on track.",
+            "I was treated politely and nothing felt rushed.",
+            "The explanation was plain and I did not have to chase it.",
+            "One short wait was the only soft spot in the visit.",
+            "I felt listened to and knew what to do next.",
+            "It was easy to book and easy to be seen."
+          ],
+          close: [
+            "I would recommend this clinic to someone nearby.",
+            "Four stars feels right, and I will book here again.",
+            "I would send a family member here.",
+            "This is a good choice when the visit must be clear.",
+            "I left reassured and I already know I would return.",
+            "A tiny delay does not change how good the visit was.",
+            "I would pick this clinic again before searching.",
+            "Care like this is worth passing on."
+          ]
+        },
+        5: {
+          open: [
+            "I had an excellent visit at {Name}.",
+            "The appointment at {Name} was everything I needed.",
+            "{Name} made a clinic visit feel calm and clear.",
+            "I left {Name} fully looked after.",
+            "My time at {Name} was worth the booking.",
+            "{Name} got the care and the explanation right.",
+            "I am glad I came to {Name}.",
+            "The visit at {Name} was a real relief."
+          ],
+          detail: [
+            "The staff were kind and my questions got clear answers.",
+            "The wait was short and the next step was explained.",
+            "The room was clean and the appointment ran smoothly.",
+            "I felt heard, and nothing about the visit was rushed.",
+            "The explanation was careful and easy to follow.",
+            "Everyone knew why I was there and treated that with care.",
+            "I left knowing exactly what to do next.",
+            "The whole visit felt organized and genuinely helpful."
+          ],
+          close: [
+            "I would recommend this clinic to my family.",
+            "Five stars is fair, and I will book here again.",
+            "This is an easy clinic to suggest.",
+            "I left reassured and I trust them with another visit.",
+            "Anyone nearby should consider this clinic.",
+            "The visit earned both a return and a recommendation.",
+            "I would choose this clinic again.",
+            "A visit this clear is rare, and this was one."
+          ]
+        }
+      },
+      salon: {
+        1: {
+          open: [
+            "I had a poor appointment at {Name}.",
+            "The result at {Name} let me down.",
+            "{Name} did not handle a simple booking well.",
+            "I left {Name} unhappy with how it looked.",
+            "My visit to {Name} was a disappointment.",
+            "{Name} made a salon visit feel careless.",
+            "I cannot praise the result at {Name}.",
+            "The service at {Name} was not what I booked."
+          ],
+          detail: [
+            "The result did not match what I asked for.",
+            "The stylist rushed and the finish was uneven.",
+            "I had to repeat the request and it was still missed.",
+            "The wait was long and the look still felt wrong.",
+            "Nobody checked the result before I was sent off.",
+            "The chair time felt careless and the finish was rough.",
+            "What I wanted and what I got were different.",
+            "I walked out wanting to undo the appointment."
+          ],
+          close: [
+            "I would not recommend this salon.",
+            "Next time I will book somewhere else.",
+            "I would not send a friend here.",
+            "A second appointment is not worth trying.",
+            "The poor score matches the whole result.",
+            "I left sure I should have gone elsewhere.",
+            "I cannot suggest this salon.",
+            "I would not come back, even for a small service."
+          ]
+        },
+        2: {
+          open: [
+            "{Name} was only a fair salon visit.",
+            "The result at {Name} was uneven.",
+            "I can give the appointment at {Name} a fair rating.",
+            "My booking at {Name} was only partly what I asked.",
+            "{Name} covered the service and little of the finish.",
+            "I left {Name} unsure about the look.",
+            "A visit to {Name} started fine, then the result slipped.",
+            "{Name} is a salon, but the service was not good."
+          ],
+          detail: [
+            "One part looked fine and the rest needed more care.",
+            "The wait was too long for the result I got.",
+            "The stylist was polite, yet the finish stayed average.",
+            "I had to point out a spot that should have been checked.",
+            "The request was heard, then only partly followed.",
+            "It was usable, but it did not look finished.",
+            "Nothing was awful, and nothing looked carefully done.",
+            "A slower, cleaner finish would have changed the visit."
+          ],
+          close: [
+            "I would book again only if no other salon was close.",
+            "I would hesitate before sending anyone here.",
+            "Fair is the right word for this result.",
+            "I am not eager to sit in this chair again.",
+            "Better salons exist for the same service.",
+            "The appointment was survivable, not pleasing.",
+            "I would look around before booking again.",
+            "Two stars is as far as this result can go."
+          ]
+        },
+        3: {
+          open: [
+            "{Name} was an okay salon visit.",
+            "The result at {Name} was average.",
+            "I had an ordinary appointment at {Name}.",
+            "{Name} did the service without standing out.",
+            "Nothing was badly wrong with the look at {Name}.",
+            "A booking at {Name} was fine for an everyday visit.",
+            "I left {Name} neither pleased nor annoyed by the look.",
+            "{Name} finished a basic service and then stopped."
+          ],
+          detail: [
+            "The result was acceptable and the wait was ordinary.",
+            "The stylist was polite, and the look was what I asked.",
+            "A short delay showed up, then the service was steady.",
+            "The finish was decent and the pace was plain.",
+            "One small spot could be neater, and the rest was fine.",
+            "The chair was fine and the result was simply okay.",
+            "The request was followed, without much extra care.",
+            "It is the kind of appointment you forget by tomorrow."
+          ],
+          close: [
+            "I would book here again if it were convenient.",
+            "Three stars fits an okay, forgettable salon visit.",
+            "I can suggest it for a simple service only.",
+            "Okay is honest for this salon.",
+            "I might return, but not for something special.",
+            "A friend could book here and expect a normal result.",
+            "I left looking fine, and not excited.",
+            "An average service, done cleanly, is the fair word."
+          ]
+        },
+        4: {
+          open: [
+            "I had a good appointment at {Name}.",
+            "The result at {Name} looked the way I hoped.",
+            "{Name} made a salon visit feel easy.",
+            "I left {Name} glad I had booked there.",
+            "My time at {Name} was pleasant and the look was solid.",
+            "{Name} followed the request and the finish was clean.",
+            "Choosing {Name} worked out well for a booking.",
+            "{Name} is a salon I would use again."
+          ],
+          detail: [
+            "The stylist listened and the result came out clean.",
+            "I felt comfortable and the service was careful.",
+            "The wait was reasonable and the finish looked right.",
+            "The request was remembered and done with care.",
+            "The place was tidy and I did not have to correct the look.",
+            "One short wait was the only soft spot in the visit.",
+            "The chair time was calm and the result was good.",
+            "It was easy to explain the look and easy to leave happy."
+          ],
+          close: [
+            "I would recommend this salon to someone nearby.",
+            "Four stars feels right, and I will book here again.",
+            "I would send a friend here for the same service.",
+            "This is a good choice when the result must be right.",
+            "I left happy and I already know I would return.",
+            "A tiny quibble does not change how good the look was.",
+            "I would pick this salon again before searching.",
+            "A result like this is worth passing on."
+          ]
+        },
+        5: {
+          open: [
+            "I had an excellent appointment at {Name}.",
+            "The result at {Name} looked exactly how I hoped.",
+            "{Name} made the salon visit feel easy and exact.",
+            "I left {Name} delighted with the look.",
+            "My booking at {Name} was worth coming back for.",
+            "{Name} got the request and the finish right.",
+            "I am glad I booked {Name}.",
+            "The chair at {Name} was a real treat."
+          ],
+          detail: [
+            "The stylist listened and the finish was precise.",
+            "I felt comfortable and the result needed nothing extra.",
+            "The place was tidy and the service stayed careful.",
+            "Every part of the request showed up in the final look.",
+            "The wait was short and the result looked polished.",
+            "I never had to repeat myself, and the finish was exact.",
+            "The appointment felt calm, skilled, and genuinely kind.",
+            "I would book the same service here again without thinking."
+          ],
+          close: [
+            "I would recommend this salon to friends.",
+            "Five stars is fair, and I will book here again.",
+            "This is an easy salon to suggest.",
+            "I left happy and I am already planning the next visit.",
+            "Anyone nearby should book here.",
+            "The result earned both a return and a recommendation.",
+            "I would choose this salon again.",
+            "A result this good is rare, and this was one."
+          ]
+        }
+      },
+    };
+    const WORDS = ["", "Poor", "Fair", "Okay", "Good", "Excellent"];
+    const TYPES = ["general", "restaurant", "shop", "clinic", "salon"];
+    const TYPE_MARK = {
+      restaurant: /meal|food|order|dish|eat|restaurant|kitchen|plate|snack|taste|menu/i,
+      shop: /shop|buy|bought|purchase|product|item|goods|billing|stock|shelf/i,
+      clinic: /clinic|appointment/i,
+      salon: /salon|stylist|appointment/i
+    };
+
+    function cleanType(value) {
+      const key = String(value || "").toLowerCase();
+      return TYPES.includes(key) ? key : "general";
+    }
+
+    const DEFAULT_PLACE = {
+      name: "Abdul Ahad Enterprises",
+      fid: "0x399c470720d572c5:0x56417441619742e0",
+      maps: "https://maps.app.goo.gl/qi7Ffes7L7ZkK98b9",
+      type: "general"
+    };
+
+    const stars = Array.from(document.querySelectorAll(".star"));
+    const group = document.querySelector(".stars");
+    const placeTitle = document.getElementById("place");
+    const mapsLink = document.getElementById("maps");
+    const meta = document.getElementById("meta");
+    const quote = document.getElementById("quote");
+    const actions = document.getElementById("actions");
+    const clearBtn = document.getElementById("clear");
+    const anotherBtn = document.getElementById("another");
+    const copyBtn = document.getElementById("copy");
+    const googleLink = document.getElementById("google");
+    const status = document.getElementById("status");
+
+    let place = DEFAULT_PLACE;
+    let rating = 0;
+    let hover = 0;
+    let choice = { open: 0, detail: 0, close: 0 };
+    let generation = 0;
+    let generationTimer = 0;
+
+    function placeIdFromFid(fid) {
+      const parts = fid.split(":").map((hex) => BigInt(hex));
+      const bytes = new Uint8Array(20);
+      const view = new DataView(bytes.buffer);
+      bytes[0] = 0x0a;
+      bytes[1] = 0x12;
+      bytes[2] = 0x09;
+      view.setBigUint64(3, parts[0], true);
+      bytes[11] = 0x11;
+      view.setBigUint64(12, parts[1], true);
+      let binary = "";
+      bytes.forEach((value) => { binary += String.fromCharCode(value); });
+      return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    }
+
+    function reviewHref(current) {
+      return "https://search.google.com/local/writereview?placeid=" + encodeURIComponent(placeIdFromFid(current.fid));
+    }
+
+    function mapsHref(current) {
+      if (current.maps && /^https?:/i.test(current.maps)) return current.maps;
+      const cid = BigInt(current.fid.split(":")[1]).toString();
+      return "https://www.google.com/maps?cid=" + cid;
+    }
+
+    function storedType(fid) {
+      try {
+        const list = JSON.parse(localStorage.getItem("star-owners") || "[]");
+        const found = Array.isArray(list) && list.find((item) => item.fid === fid);
+        return found ? cleanType(found.type) : "general";
+      } catch {
+        return "general";
+      }
+    }
+
+    function pageHref(current) {
+      const url = new URL(location.href);
+      url.searchParams.set("name", current.name);
+      url.searchParams.set("fid", current.fid);
+      url.searchParams.set("type", cleanType(current.type));
+      if (current.maps) url.searchParams.set("maps", current.maps);
+      else url.searchParams.delete("maps");
+      return url.toString();
+    }
+
+    function readPlace() {
+      const params = new URLSearchParams(location.search);
+      const name = params.get("name");
+      const fid = params.get("fid");
+      const maps = params.get("maps");
+      if (name && fid && /^0x[0-9a-f]+:0x[0-9a-f]+$/i.test(fid)) {
+        const fromUrl = params.get("type");
+        return {
+          name: name,
+          fid: fid,
+          maps: maps || "",
+          type: fromUrl ? cleanType(fromUrl) : storedType(fid)
+        };
+      }
+      return { ...DEFAULT_PLACE, type: storedType(DEFAULT_PLACE.fid) };
+    }
+
+    function rememberOwner(current) {
+      const key = "star-owners";
+      let list = [];
+      try {
+        list = JSON.parse(localStorage.getItem(key) || "[]");
+      } catch {
+        list = [];
+      }
+      if (!Array.isArray(list)) list = [];
+      const existing = list.find((item) => item.fid === current.fid);
+      if (existing) {
+        existing.name = current.name;
+        existing.maps = current.maps || existing.maps || "";
+        existing.type = cleanType(current.type);
+      } else {
+        list.push({
+          name: current.name,
+          fid: current.fid,
+          maps: current.maps || "",
+          type: cleanType(current.type),
+          added: Date.now()
+        });
+      }
+      localStorage.setItem(key, JSON.stringify(list));
+    }
+
+    function setPlace(next) {
+      place = { ...next, type: cleanType(next.type) };
+      placeTitle.textContent = place.name;
+      document.title = place.name;
+      mapsLink.href = mapsHref(place);
+      googleLink.href = reviewHref(place);
+      history.replaceState(null, "", pageHref(place));
+      rememberOwner(place);
+      if (rating) showLine(false);
+    }
+
+    function fill(template) {
+      const raw = place.name.trim().replace(/\s+/g, " ");
+      return template.replaceAll("{Name}", raw || "This").replaceAll("{name}", raw || "this");
+    }
+
+    function reviewBag() {
+      const group = PARTS[cleanType(place.type)] || PARTS.general;
+      return group[rating];
+    }
+
+    function textFor(next) {
+      const bag = reviewBag();
+      return [
+        fill(bag.open[next.open]),
+        fill(bag.detail[next.detail]),
+        fill(bag.close[next.close])
+      ].join(" ");
+    }
+
+    function currentLine() {
+      if (!rating) return "";
+      return textFor(choice);
+    }
+
+    function pickSlot(list, avoid) {
+      if (list.length < 2) return 0;
+      let next = Math.floor(Math.random() * list.length);
+      if (next === avoid) next = (next + 1) % list.length;
+      return next;
+    }
+
+    function sameChoice(left, right) {
+      return left.open === right.open && left.detail === right.detail && left.close === right.close;
+    }
+
+    function chooseReview(avoid) {
+      const bag = reviewBag();
+      const mark = TYPE_MARK[cleanType(place.type)];
+      let best = null;
+      let bestGap = 99;
+      for (let attempt = 0; attempt < 60; attempt += 1) {
+        const next = {
+          open: pickSlot(bag.open, avoid ? avoid.open : -1),
+          detail: pickSlot(bag.detail, avoid ? avoid.detail : -1),
+          close: pickSlot(bag.close, avoid ? avoid.close : -1)
+        };
+        if (avoid && sameChoice(next, avoid)) {
+          next.close = (next.close + 1) % bag.close.length;
+        }
+        const text = textFor(next);
+        let gap = text.length < 120 ? 120 - text.length : text.length > 146 ? text.length - 146 : 0;
+        if (mark && !mark.test(text)) gap += 80;
+        if (gap === 0) return next;
+        if (!best || gap < bestGap) {
+          best = next;
+          bestGap = gap;
+        }
+      }
+      return best;
+    }
+
+    function paintStars() {
+      const shown = hover || rating;
+      stars.forEach((star, index) => {
+        const value = index + 1;
+        star.classList.toggle("on", value <= shown);
+        star.setAttribute("aria-checked", String(value === rating));
+        star.tabIndex = value === (rating || 1) ? 0 : -1;
+      });
+    }
+
+    function paintQuote(text, animate) {
+      quote.classList.remove("generating");
+      quote.removeAttribute("aria-busy");
+      quote.textContent = text || "Choose a star to write a review.";
+      quote.classList.toggle("empty", !text);
+      if (animate && text) {
+        quote.classList.remove("fresh");
+        void quote.offsetWidth;
+        quote.classList.add("fresh");
+      }
+    }
+
+    function showGenerating() {
+      quote.classList.add("generating");
+      quote.classList.remove("fresh", "empty");
+      quote.setAttribute("aria-busy", "true");
+      quote.replaceChildren(document.createTextNode("AI is generating"));
+      const wave = document.createElement("span");
+      wave.className = "wave";
+      wave.setAttribute("aria-hidden", "true");
+      for (let dot = 0; dot < 3; dot += 1) wave.append(document.createElement("i"));
+      quote.append(wave);
+    }
+
+    function showLine(animate) {
+      const text = currentLine();
+      meta.textContent = rating ? WORDS[rating] + " · " + rating + " / 5" : "";
+      actions.hidden = !rating;
+      clearBtn.hidden = !rating;
+      window.clearTimeout(generationTimer);
+      const token = ++generation;
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (!animate || !text || reduce) {
+        paintQuote(text, animate && !reduce);
+        return;
+      }
+      showGenerating();
+      generationTimer = window.setTimeout(() => {
+        if (token !== generation) return;
+        paintQuote(text, true);
+      }, 1000);
+    }
+
+    function setRating(value, animate) {
+      const changed = value !== rating;
+      rating = value;
+      if (!value) {
+        choice = { open: 0, detail: 0, close: 0 };
+        hover = 0;
+        showLine(false);
+        paintStars();
+        stars[0].tabIndex = 0;
+        return;
+      }
+      if (changed) choice = chooseReview(null);
+      showLine(animate);
+      paintStars();
+    }
+
+    stars.forEach((star) => {
+      star.addEventListener("click", () => {
+        hover = 0;
+        setRating(Number(star.dataset.value), true);
+      });
+    });
+
+    group.addEventListener("pointerover", (event) => {
+      if (event.pointerType === "touch") return;
+      const star = event.target.closest(".star");
+      if (!star) return;
+      hover = Number(star.dataset.value);
+      paintStars();
+    });
+
+    group.addEventListener("pointerleave", () => {
+      hover = 0;
+      paintStars();
+    });
+
+    group.addEventListener("keydown", (event) => {
+      const current = rating || 0;
+      let next = current;
+      if (event.key === "ArrowRight" || event.key === "ArrowUp") next = Math.min(5, (current || 0) + 1);
+      else if (event.key === "ArrowLeft" || event.key === "ArrowDown") next = Math.max(1, (current || 1) - 1);
+      else if (event.key === "Home") next = 1;
+      else if (event.key === "End") next = 5;
+      else if (/^[1-5]$/.test(event.key)) next = Number(event.key);
+      else return;
+      event.preventDefault();
+      hover = 0;
+      setRating(next, true);
+      stars[next - 1].focus();
+    });
+
+    clearBtn.addEventListener("click", () => {
+      setRating(0, false);
+      status.textContent = "";
+      stars[0].focus();
+    });
+
+    anotherBtn.addEventListener("click", () => {
+      if (!rating) return;
+      choice = chooseReview(choice);
+      showLine(true);
+    });
+
+    function copyText(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).catch(() => copyWithField(text));
+      }
+      copyWithField(text);
+      return Promise.resolve();
+    }
+
+    function copyWithField(text) {
+      const area = document.createElement("textarea");
+      area.value = text;
+      document.body.appendChild(area);
+      area.select();
+      document.execCommand("copy");
+      area.remove();
+    }
+
+    function flashCopy() {
+      const previous = copyBtn.textContent;
+      copyBtn.textContent = "Copied";
+      window.setTimeout(() => {
+        copyBtn.textContent = previous;
+      }, 1200);
+    }
+
+    copyBtn.addEventListener("click", () => {
+      const text = currentLine();
+      if (!text) return;
+      copyText(text).then(() => {
+        flashCopy();
+        status.textContent = "Copied. Paste it into the Google review box.";
+      });
+    });
+
+    googleLink.addEventListener("click", (event) => {
+      const text = currentLine();
+      if (!text) {
+        event.preventDefault();
+        status.textContent = "Choose a star first.";
+        return;
+      }
+      copyText(text).then(() => {
+        flashCopy();
+        status.textContent = "Copied. Paste it into the Google review box.";
+      });
+    });
+
+    setPlace(readPlace());
+    paintStars();
+  </script>
+</body>
+</html>

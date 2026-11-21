@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Star">
+  <rect width="64" height="64" fill="#fff"/>
+  <path fill="#c5a35a" transform="translate(32 33.2) scale(2.45) translate(-12 -11)" d="M12 2.2l2.85 5.78 6.38.93-4.62 4.5 1.09 6.36L12 16.77l-5.7 3 1.09-6.36-4.62-4.5 6.38-.93L12 2.2z"/>
+</svg>
